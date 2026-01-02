@@ -1,0 +1,31 @@
+laravel new ecommerce
+cd ecommerce
+npm i
+npm install tailwindcss @tailwindcss/vite  	(   importar na view '@vite('resources/css/app.css')'   )
+npm run build
+npm run dev
+php artisan serve
+composer require filament/filament
+php artisan filament:install --panels
+php artisan make:filament-user
+php artisan vendor:publish --tag=filament-config
+php artisan make:filament-resource User 
+php artisan make:controller Auth/ShowLoginController
+php artisan make:controller Auth/ShowRegisterController
+php artisan make:controller Auth/StoreLoginController
+php artisan make:controller Auth/StoreRegisterController
+php artisan make:controller Auth/LogoutController
+php artisan make:middleware Authenticate
+php artisan make:middleware RoleMiddleware
+php artisan make:controller User/DashboardController
+php artisan make:controller User/ShowProfileController
+php artisan make:view auth/login
+php artisan make:view auth/register
+php artisan make:view layouts/app
+php artisan make:view user/dashboard
+php artisan make:view user/profile
+php artisan make:migration SiteSettings ('ajuste a tabela antes de usa-la no filament')
+php artisan make:model SiteSetting
+php artisan make:filament-resource  SiteSettings
+
+
