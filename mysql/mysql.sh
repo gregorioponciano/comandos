@@ -23,8 +23,7 @@ mysql -u root -p                # Com senha
 mysql -u usuario -p             # Usuário específico
 mysql -h localhost -u root -p  # Especificar host
 
-# Veja os usuários que existem
-SELECT User, Host FROM mysql.user;
+
 #  Dê todos os privilégios para este usuário
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
 # Atualize os privilégios
@@ -35,6 +34,9 @@ SELECT USER();
 
 #Usuário atual e privilégios
 SELECT CURRENT_USER();
+
+# Veja os usuários que existem
+SELECT User, Host FROM mysql.user;
 
 # Host de conexão
 SELECT SUBSTRING_INDEX(USER(), '@', -1) AS host;
