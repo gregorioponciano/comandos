@@ -1,4 +1,19 @@
                 Arsenal de Comandos Git - Guia Completo
+ssh
+
+ls -al ~/.ssh
+ssh-keygen -t ed25519 -C "seu_email@exemplo.com"
+cat ~/.ssh/id_ed25519.pub
+ssh -T git@github.com
+
+Para que o Git use SSH em um repositório existente, a URL remota deve usar o formato SSH, não HTTPS. Você pode conferir e alterar com: 
+
+# Ver URL atual
+git remote -v
+
+# Alterar para SSH (exemplo GitHub)
+git remote set-url origin git@github.com:USUARIO/REPOSITORIO.git
+
 
 # 📋 CONFIGURAÇÃO INICIAL
 
