@@ -1,3 +1,104 @@
+
+# MANUAL AVANÇADO DO GIT, CONEXÕES SSH E INFRAESTRUTURA GITHUB
+
+## 1. Configuração de Identidade e Sistema (System Information & Network Configuration)
+git config --global user.name "O Teu Nome"               # Define o nome público que aparece em todos os teus commits.
+git config --global user.email "seu-email@link.com"      # Define o e-mail de identidade associado à tua conta do GitHub.
+git config --global core.editor "vim"                    # Altera o editor de texto padrão para a criação de mensagens de commit complexas.
+git config --global init.defaultBranch main              # Altera o nome padrão de inicialização de novas ramificações locais para 'main'.
+git config --list --show-origin                          # Lista todas as configurações ativas e mostra a localização dos ficheiros de origem.
+git config --global core.pager "less -F -X"              # Configura o comportamento do terminal para paginar logs extensos de forma limpa.
+
+## 2. Geração de Chaves Criptográficas e Conexão ao GitHub via SSH (SSH, Keys & Remote Access)
+# Passo 1: Gerar um par de chaves SSH usando o algoritmo moderno e seguro Ed25519
+ssh-keygen -t ed25519 -C "seu-email@link.com"            # Cria uma chave privada e uma chave pública. Pressione Enter para salvar no local padrão.
+
+# Passo 2: Inicializar o agente SSH do sistema em segundo plano
+eval "$(ssh-agent -s)"                                   # Ativa o daemon do ssh-agent para gerenciar as tuas chaves na sessão atual.
+
+# Passo 3: Adicionar a tua chave privada gerada ao agente SSH
+ssh-add ~/.ssh/id_ed25519                                # Adiciona a chave privada para que não tenhas de digitar a senha em cada comando.
+
+# Passo 4: Exibir e copiar a tua chave PÚBLICA para colar nas configurações do GitHub (Settings -> SSH and GPG keys)
+cat ~/.ssh/id_ed25519.pub                                # Mostra o conteúdo da chave pública. Copie todo o texto exibido no terminal.
+
+# Passo 5: Testar se a conexão criptografada com o GitHub está funcionando corretamente
+ssh -T git@github.com                                    # Valida a autenticação SSH. Deve exibir uma mensagem de sucesso com o teu nome de usuário.
+
+## 3. Gestão de Repositórios Remotos e Vínculos Seguros (VPN and Tunneling / Traffic Flow)
+git remote -v                                            # Lista as conexões e URLs dos servidores remotos vinculados ao repositório local.
+git remote add origin git@github.com:user/repo.git       # Conecta o repositório local ao GitHub usando o link seguro SSH (evita pedir usuário/senha).
+git remote set-url origin git@github.com:user/repo.git   # Altera uma URL antiga baseada em HTTPS para o formato moderno e seguro de SSH.
+git remote prune origin                                  # Remove referências locais a ramificações remotas que já foram apagadas no servidor.
+
+## 4. Automação de Tarefas, Atalhos e Atalhos Personalizados (Task Automation & Scripting Helpers)
+git config --global alias.st "status -s"                 # Cria um atalho automatizado para exibir o estado resumido e limpo dos ficheiros.
+git config --global alias.graph "log --graph --oneline" # Atalho para renderizar a árvore de desenvolvimento visual diretamente no terminal.
+git config --global alias.last "log -1 HEAD"             # Atalho rápido para inspecionar os metadados e o autor do último commit efetuado.
+
+## 5. Fluxo de Trabalho, Compressão e Estado (Archive Handling & Task Flow)
+git init                                                 # Inicializa uma estrutura oculta de monitorização (.git) na pasta atual do teu projeto.
+git status                                               # Analisa o diretório de trabalho e lista ficheiros modificados, deletados ou novos.
+git add .                                                # Move todas as alterações e novos ficheiros para a área de preparação (Staging).
+git add -p arquivo.txt                                   # Modo interativo: inspeciona e adiciona alterações linha por linha (hunks).
+git commit -m "Mensagem estruturada"                     # Consolida o estado da área de preparação permanentemente no histórico local.
+git commit -am "Mensagem direta"                         # Atalho: adiciona ficheiros modificados e faz commit sem passar pelo 'git add'.
+git archive --format=tar.gz -o backup.tar.gz HEAD        # Compacta e exporta o estado atual do código num pacote comprimido limpo.
+
+## 6. Auditoria de Logs, Linhas e Autores (Log Analysis & Information Gathering)
+git log --oneline --graph --decorate --all               # Gera o mapa visual completo de todas as ramificações e fusões efetuadas.
+git log --author="Nome"                                  # Filtra a linha do tempo para expor commits feitos por um programador específico.
+git log --grep="bug"                                     # Varre as mensagens do histórico procurando termos ou identificadores de falhas.
+git log -p arquivo.txt                                   # Exibe o histórico de modificações mostrando o código (diff) de cada commit.
+git blame arquivo.txt                                    # Exibe linha por linha quem foi o último autor a modificar o ficheiro e em qual commit.
+git shortlog -sn                                         # Cria uma tabela agregada listando o número total de commits ordenados por autor.
+git reflog                                               # Registo local de movimentação do HEAD (permite recuperar commits eliminados).
+
+## 7. Comparação de Arquivos e Estados (File Comparison)
+git diff                                                 # Compara o diretório de trabalho atual com o que está preparado no Staging.
+git diff --staged                                        # Exibe as alterações que já foram adicionadas (add) e estão prontas para o commit.
+git diff branch_A branch_B                               # Compara as diferenças de código exatas entre duas ramificações.
+git diff commit_A commit_B -- arquivo.txt                # Isola e compara as alterações de um ficheiro específico entre dois pontos do tempo.
+
+## 8. Gestão de Ramificações e Ambientes (Enumeration & Branching)
+git branch                                               # Enumera todas as ramificações locais disponíveis no teu ambiente.
+git branch -a                                            # Enumera ramificações locais e cópias de ramificações remotas instaladas.
+git branch nome-da-feature                               # Cria uma nova linha de desenvolvimento paralela isolada.
+git checkout nome-da-feature                             # Altera o ambiente de trabalho para a ramificação especificada.
+git switch -c nova-feature                               # Mecânica moderna para criar e mudar de ramificação num único comando.
+git branch -d nome-da-feature                            # Elimina uma ramificação local de forma segura se ela já foi fundida.
+git branch -D nome-da-feature                            # Força a eliminação destrutiva de uma ramificação, ignorando o estado de fusão.
+
+## 9. Integração e Engenharia de Fusão (Exploitation & Merging)
+git merge nome-da-feature                                # Funde as alterações da ramificação informada no teu ambiente atual.
+git merge --abort                                        # Interrompe e limpa o estado do sistema se ocorrerem conflitos na fusão.
+git rebase main                                          # Reescreve a árvore de commits aplicando as tuas alterações no topo da ramificação main.
+git rebase -i HEAD~3                                     # Rebase Interativo: permite fundir, renomear ou eliminar os últimos 3 commits.
+git cherry-pick ID_DO_COMMIT                             # Captura um commit isolado de outra ramificação e aplica-o na tua atual.
+
+## 10. Sincronização de Tráfego de Dados Remotos (Traffic Flow / Synchronization)
+git fetch origin                                         # Descarrega metadados e atualizações do servidor sem alterar os teus ficheiros locais.
+git pull origin main                                     # Procura atualizações remotas e funde-as imediatamente na tua ramificação atual.
+git pull --rebase origin main                            # Executa a captura remota organizando o teu histórico de forma linear (evita commits de merge).
+git push origin main                                     # Envia os teus commits locais consolidados para a infraestrutura do servidor remoto.
+git push -u origin nova-branch                           # Envia a nova ramificação e cria o vínculo de rastreio automático de dados.
+git push origin --delete nova-branch                     # Comando enviado ao servidor para destruir uma ramificação armazenada remotamente.
+
+## 11. Salvamento Temporário e Limpeza (Persistence & Stash)
+git stash                                                # Guarda temporariamente alterações modificadas no ambiente e limpa a área de trabalho.
+git stash -u                                             # Persiste o estado temporário incluindo ficheiros novos que não estavam a ser monitorizados.
+git stash list                                           # Enumera todos os blocos de modificações temporárias guardadas no sistema.
+git stash apply                                          # Restaura as alterações do último salvamento sem o apagar da pilha.
+git stash pop                                            # Restaura o estado salvo temporariamente e remove-o imediatamente da lista.
+git stash clear                                          # Destrói permanentemente todos os stashes temporários criados no repositório.
+git clean -fd                                            # Comando destrutivo: elimina fisicamente ficheiros e pastas não monitorizados do disco.
+
+## 12. Criptografia, Etiquetas e Versões Assinadas (Encryption, Keys & Tags)
+git tag -a v1.0.0 -m "Versão Estável"                    # Cria uma etiqueta (tag) anotada mapeando um ponto crítico de lançamento.
+
+
+
+
 # GUIA RÁPIDO DO GIT - 100 COMANDOS ESSENCIAIS
 
 ## 1. Configuração Inicial e Identidade
